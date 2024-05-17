@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "Glue",
+  "version": "1.0",
+  "description": "Stop getting stuck on social media",
+  "action": {
+    "default_popup": "index.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.bundle.js"]
+    }
+  ],
+  "permissions": [
+    "storage",
+    "activeTab"
+  ]
+}
