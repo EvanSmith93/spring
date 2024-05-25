@@ -1,7 +1,7 @@
 /*global chrome*/
 import React, { useState, useEffect } from 'react';
 import { Input, Button, Form, Space } from 'antd';
-import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
+import { DeleteTwoTone, PlusOutlined } from '@ant-design/icons';
 
 export const UrlInputList = () => {
   const [urls, setUrls] = useState([{ key: 0, value: '' }]);
@@ -42,23 +42,25 @@ export const UrlInputList = () => {
 
   return (
     <Form>
-      {urls.map(url => (
-        <div key={url.key} style={{ display: 'flex', marginBottom: 8 }}>
-          <Input
-            placeholder="Enter URL"
-            addonBefore="https://"
-            value={url.value}
-            onChange={e => handleChange(url.key, e)}
-            style={{ width: '80%', marginRight: 8 }}
-          />
-          <MinusCircleOutlined onClick={() => handleRemove(url.key)} style={{ verticalAlign: 'middle' }} size={24} />
-          </div>
-      ))}
-      <Form.Item>
-        <Button type="dashed" onClick={handleAdd} icon={<PlusOutlined />}>
-          Add URL
-        </Button>
-      </Form.Item>
+      <Space direction="vertical">
+        {urls.map(url => (
+          <Space key={url.key}>
+            <Input
+              placeholder="Enter URL"
+              addonBefore="https://"
+              value={url.value}
+              onChange={e => handleChange(url.key, e)}
+            />
+            <DeleteTwoTone onClick={() => handleRemove(url.key)} style={{ verticalAlign: 'middle' }} twoToneColor={'red'} />
+          </Space>
+        ))}
+        
+        <Form.Item>
+          <Button type="dashed" onClick={handleAdd} icon={<PlusOutlined />}>
+            Add URL
+          </Button>
+        </Form.Item>
+      </Space>
     </Form>
   );
 };

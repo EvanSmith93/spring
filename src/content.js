@@ -10,7 +10,6 @@ async function getDataFromStorage(key) {
 
 async function main() {
     const isEnabled = await getDataFromStorage('isEnabled');
-    console.log('isEnabled', isEnabled);
     if (!isEnabled) return;
 
     const urls = await getDataFromStorage('urls');
@@ -22,17 +21,16 @@ async function main() {
         const wwwRegex = /www./;
         const trailingSlashRegex = /\/$/;
         url = url.replace(protocolRegex, '');
-        currentUrl = currentUrl.replace(protocolRegex, '');
         url = url.replace(wwwRegex, '');
-        currentUrl = currentUrl.replace(wwwRegex, '');
         url = url.replace(trailingSlashRegex, '');
+        currentUrl = currentUrl.replace(protocolRegex, '');
+        currentUrl = currentUrl.replace(wwwRegex, '');
         currentUrl = currentUrl.replace(trailingSlashRegex, '');
 
-        return url === currentUrl;
+        return currentUrl.startsWith(url);
     })) return;
 
-    const dropOff = 0.97;
-    const distance = 30;
+    const force = await getDataFromStorage('force') ?? 50;
 
     // slows scrolling down as the user scrolls down
     function handleWheel(event) {
@@ -40,7 +38,7 @@ async function main() {
         var scrollTopSpeed = event.deltaY;
 
         if (event.deltaY > 0) {
-            const scrollFactor = dropOff**(document.documentElement.scrollTop / distance);
+            const scrollFactor = force / (force + document.documentElement.scrollTop);
             scrollTopSpeed *= scrollFactor;
         }
 
