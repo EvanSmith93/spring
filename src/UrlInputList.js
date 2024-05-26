@@ -1,9 +1,9 @@
 /*global chrome*/
 import React, { useState, useEffect } from 'react';
 import { Input, Button, Form, Space } from 'antd';
-import { DeleteTwoTone, PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 
-export const UrlInputList = () => {
+export const UrlInputList = ({ disabled }) => {
   const [urls, setUrls] = useState([{ key: 0, value: '' }]);
 
   const handleChange = (key, event) => {
@@ -36,12 +36,11 @@ export const UrlInputList = () => {
 
   useEffect(() => {
     // store the urls in local storage
-    console.log('storing urls', urls)
     chrome.storage.local.set({ urls: urls.map(url => url.value) });
   }, [urls]);
 
   return (
-    <Form>
+    <Form disabled={disabled}>
       <Space direction="vertical">
         {urls.map(url => (
           <Space key={url.key}>
@@ -51,10 +50,19 @@ export const UrlInputList = () => {
               value={url.value}
               onChange={e => handleChange(url.key, e)}
             />
-            <DeleteTwoTone onClick={() => handleRemove(url.key)} style={{ verticalAlign: 'middle' }} twoToneColor={'red'} />
+            <Button
+              type="text"
+              disabled={disabled}
+              onClick={() => handleRemove(url.key)}
+              icon={
+                <DeleteOutlined
+                  style={{ fontSize: '18px', color: (disabled ? 'gray' : 'red') }}
+                />
+              }
+            />
           </Space>
         ))}
-        
+
         <Form.Item>
           <Button type="dashed" onClick={handleAdd} icon={<PlusOutlined />}>
             Add URL

@@ -14,8 +14,8 @@ async function main() {
 
     const urls = await getDataFromStorage('urls');
     if (!!urls && !urls.some(url => {
-        url = new URI(url).normalize().toString();
-        var currentUrl = new URI(window.location.href).normalize().toString();
+        url = new URI(url.toLowerCase()).normalize().toString();
+        var currentUrl = new URI(window.location.href.toLowerCase()).normalize().toString();
         
         const protocolRegex = /(^\w*:)\/\//;
         const wwwRegex = /www./;

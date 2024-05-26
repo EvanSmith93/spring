@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import UrlInputList from './UrlInputList';
 import { Typography, Switch, Space, FloatButton, Button, Flex, Slider } from 'antd';
 import { PoweroffOutlined } from '@ant-design/icons';
+import './App.css';
 
 const App = () => {
     const [isEnabled, setIsEnabled] = useState(null);
@@ -19,7 +20,7 @@ const App = () => {
     }, []);
 
     useEffect(() => {
-        chrome.storage.local.set({ isEnabled: isEnabled});
+        chrome.storage.local.set({ isEnabled: isEnabled });
     }, [isEnabled]);
 
     useEffect(() => {
@@ -32,29 +33,34 @@ const App = () => {
     const formatter = (value) => `${Math.round(((value - minForce) / (maxForce - minForce)) * 100)}%`
 
     return (
-        <Space direction="vertical" style={{ padding: '12px 24px' }}>
+        <Space direction="vertical" style={{ padding: '12px 24px', width: '340px' }}>
             <Flex justify='space-between' align='center' dir='column' style={{ width: '100%' }} >
-                <h2>URL Input List</h2>
-                {isEnabled !== null && 
-                    <Button 
-                    icon={<PoweroffOutlined />} 
-                    onClick={() => setIsEnabled(!isEnabled)} 
-                    shape='circle' type='primary' 
-                    style={{ backgroundColor: isEnabled ? null : 'gray' }} 
+                <h2>Glue Settings</h2>
+                {isEnabled !== null &&
+                    <Button
+                        icon={<PoweroffOutlined />}
+                        onClick={() => setIsEnabled(!isEnabled)}
+                        shape='circle' type='primary'
+                        style={{ backgroundColor: isEnabled ? null : 'gray' }}
                     />
                 }
             </Flex>
-            {force !== null && 
-                <Slider 
-                min={minForce} 
-                max={maxForce} 
-                marks={marks} 
-                tooltip={{ formatter }}
-                defaultValue={force} 
-                onChange={value => setForce(value)} 
-                />
+
+            {force !== null &&
+                <Flex justify='center'>
+                    <Slider
+                        className='custom-slider'
+                        min={minForce}
+                        max={maxForce}
+                        marks={marks}
+                        tooltip={{ formatter }}
+                        defaultValue={force}
+                        onChange={value => setForce(value)}
+                        disabled={!isEnabled}
+                    />
+                </Flex>
             }
-            <UrlInputList />
+            <UrlInputList disabled={!isEnabled} />
         </Space>
     );
 };
