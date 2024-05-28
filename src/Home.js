@@ -3,9 +3,8 @@ import ReactDOM from 'react-dom';
 import UrlInputList from './UrlInputList';
 import { Typography, Switch, Space, FloatButton, Button, Flex, Slider } from 'antd';
 import { PoweroffOutlined } from '@ant-design/icons';
-import './App.css';
 
-const App = () => {
+const Home = () => {
     const [isEnabled, setIsEnabled] = useState(null);
     const [force, setForce] = useState(null);
 
@@ -65,4 +64,4 @@ const App = () => {
     );
 };
 
-ReactDOM.render(<App />, document.getElementById('root'));
+export default Home;
