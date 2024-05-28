@@ -21,7 +21,7 @@ export const UrlInputList = ({ disabled }) => {
     setUrls([...urls, { key: newKey, value: '' }]);
   };
 
-  const handleRemove = key => {
+  const handleRemove = (key) => {
     setUrls(urls.filter(url => url.key !== key));
   };
 

@@ -1,4 +1,5 @@
 import URI from 'urijs';
+import { is } from 'urijs/src/SecondLevelDomains';
 
 async function getDataFromStorage(key) {
     return new Promise((resolve, reject) => {
@@ -8,15 +9,15 @@ async function getDataFromStorage(key) {
     });
 }
 
-async function main() {
+async function isUrlInList(url) {
     const isEnabled = await getDataFromStorage('isEnabled');
-    if (!isEnabled) return;
+    if (!isEnabled) return false;
 
     const urls = await getDataFromStorage('urls');
     if (!!urls && !urls.some(url => {
         url = new URI(url.toLowerCase()).normalize().toString();
         var currentUrl = new URI(window.location.href.toLowerCase()).normalize().toString();
-        
+
         const protocolRegex = /(^\w*:)\/\//;
         const wwwRegex = /www./;
         const trailingSlashRegex = /\/$/;
@@ -28,7 +29,13 @@ async function main() {
         currentUrl = currentUrl.replace(trailingSlashRegex, '');
 
         return currentUrl.startsWith(url);
-    })) return;
+    })) return false;
+
+    return true;
+}
+
+async function main() {
+    if (!isUrlInList(window.location.href)) return;
 
     const force = await getDataFromStorage('force') ?? 50;
 
