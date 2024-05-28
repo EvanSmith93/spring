@@ -12,9 +12,9 @@
   "license": "ISC",
   "dependencies": {
     "antd": "^5.17.2",
+    "psl": "^1.9.0",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "urijs": "^1.19.11"
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "@babel/core": "^7.24.5",

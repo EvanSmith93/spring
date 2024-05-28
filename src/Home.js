@@ -13,7 +13,6 @@ const Home = () => {
             setIsEnabled(data.isEnabled ?? true);
         });
         chrome.storage.local.get('force', data => {
-            console.log('force', data.force)
             setForce(data.force ?? 200);
         });
     }, []);
