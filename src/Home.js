@@ -7,17 +7,30 @@ import Meta from 'antd/es/card/Meta';
 import { BrowserRouter, Link } from 'react-router-dom';
 
 export const Home = () => {
-    const emptyCollection = { key: 0, name: '', force: 50, urls: [] };
+    const emptyCollection = { key: 0, name: '', isEnabled: true, force: 50, urls: [] };
     const [collections, setCollections] = useState([structuredClone(emptyCollection)]);
 
     const handleAdd = () => {
         const newKey = collections.length ? collections[collections.length - 1].key + 1 : 0;
-        setCollections([...collections, structuredClone(emptyCollection)]);
+        const newCollection = structuredClone(emptyCollection);
+        newCollection.key = newKey;
+        setCollections([...collections, newCollection]);
     };
 
-    const handleRemove = (key) => {
-        setCollections(collections.filter(collection => collection.key !== key));
-    };
+    // const handleRemove = () => {
+    //     setCollections(collections.filter(collection => collection.key !== key));
+    // };
+
+    useEffect(() => {
+        chrome.storage.local.get('collections', data => {
+            const collections = data.collections;
+            if (collections) setCollections(collections);
+        });
+    }, []);
+
+    useEffect(() => {
+        chrome.storage.local.set({ collections });
+    }, [collections]);
 
     return (
         <Space direction="vertical" style={{ padding: '12px 24px', width: '340px' }}>

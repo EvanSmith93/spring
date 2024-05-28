@@ -1,5 +1,4 @@
 import URI from 'urijs';
-import { is } from 'urijs/src/SecondLevelDomains';
 
 async function getDataFromStorage(key) {
     return new Promise((resolve, reject) => {
@@ -35,7 +34,7 @@ async function isUrlInList(url) {
 }
 
 async function main() {
-    if (!isUrlInList(window.location.href)) return;
+    if (!(await isUrlInList(window.location.href))) return;
 
     const force = await getDataFromStorage('force') ?? 50;
 

@@ -9,7 +9,7 @@ const App = () => {
     return (
         <Routes>
             <Route path='' element={<Home />} />
-            <Route path='collection/:id' element={<Collection id={1} />} />
+            <Route path='collection/:key' element={<Collection />} />
         </Routes>
     );
 }

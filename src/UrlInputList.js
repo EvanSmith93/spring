@@ -3,8 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { Input, Button, Form, Space } from 'antd';
 import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 
-export const UrlInputList = ({ disabled }) => {
-  const [urls, setUrls] = useState([{ key: 0, value: '' }]);
+export const UrlInputList = ({ disabled, urls }) => {
+  // const [urls, setUrls] = useState([{ key: 0, value: '' }]);
 
   const handleChange = (key, event) => {
     const newUrls = urls.map(url => {
