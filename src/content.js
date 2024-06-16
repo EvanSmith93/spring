@@ -1,5 +1,20 @@
 import psl from 'psl';
 
+window.navigation.addEventListener("navigate", () => {
+    const url = window.location.href;
+    main(url);
+    const interval = setInterval(() => {
+        if (window.location.href !== url) {
+            clearInterval(interval);
+            main(window.location.href);
+        }
+    }, 50);
+    setTimeout(() => {
+        clearInterval(interval);
+    }, 1000);
+});
+
+
 function addProtocol(url) {
     if (!/^\w+:\/\//i.test(url)) {
         return 'https://' + url;
@@ -29,25 +44,16 @@ function isUrlMatching(base, target) {
     // check if the base subdomain is a suffix of the target subdomain
     if (!baseParsed.subdomain || baseParsed.subdomain === 'www') baseParsed.subdomain = '';
     if (!targetParsed.subdomain || targetParsed.subdomain === 'www') targetParsed.subdomain = '';
-    const isSubdomainMatching = targetParsed.subdomain.endsWith(baseParsed.subdomain); // can cause issues when the suffix is a part of the subdomain
+    const isSubdomainMatching = targetParsed.subdomain.endsWith(baseParsed.subdomain); // could cause issues when the suffix is a part of the subdomain
     if (!isSubdomainMatching) return false;
 
     if (!baseURL.pathname) baseURL.pathname = '';
     if (!targetURL.pathname) targetURL.pathname = '';
-    const isPathMatching = targetURL.pathname.startsWith(baseURL.pathname);
+    const isPathMatching = targetURL.pathname.startsWith(baseURL.pathname); // could cause issues where the path is a prefix of the target path (but actually different)
     if (!isPathMatching) return false;
 
     return true;
 }
-
-// Test cases
-// console.log(isUrlMatching('example.com/', 'https://sub.example.com')); // true
-// console.log(isUrlMatching('www.example.com', 'https://example.com/some/path/')); // true
-// console.log(isUrlMatching('example.com', 'https://sub.example.com/')); // true
-// console.log(isUrlMatching('sub.example.com', 'https://sub.example.com/another/path')); // true
-// console.log(isUrlMatching('example.com/path', 'https://example.com/path/to/somewhere/else')); // true
-// console.log(isUrlMatching('example.com/path', 'https://example.com/otherpath')); // false
-// console.log(isUrlMatching('sub.example.com', 'https://example.com')); // false
 
 async function getDataFromStorage(key) {
     return new Promise((resolve, reject) => {
@@ -67,42 +73,47 @@ async function limitScroll(url) {
     return true;
 }
 
-async function main() {
-    if (!(await limitScroll(window.location.href))) return;
+// slows scrolling down as the user scrolls down
+function handleWheel(event) {
+    event.preventDefault();
+    var scrollTopSpeed = event.deltaY;
 
-    const force = await getDataFromStorage('force') ?? 50;
+    if (event.deltaY > 0) {
+        const scrollFactor = force / (force + document.documentElement.scrollTop);
+        scrollTopSpeed *= scrollFactor;
+    }
 
-    // slows scrolling down as the user scrolls down
-    function handleWheel(event) {
+    document.documentElement.scrollTop += scrollTopSpeed;
+}
+
+// prevent scrolling with arrow keys and space bar
+function handleKeydown(event) {
+    if ((event.key == 'ArrowDown' || event.key == 'ArrowUp' || event.key == ' ') && event.target == document.body) {
         event.preventDefault();
-        var scrollTopSpeed = event.deltaY;
-
-        if (event.deltaY > 0) {
-            const scrollFactor = force / (force + document.documentElement.scrollTop);
-            scrollTopSpeed *= scrollFactor;
-        }
-
-        document.documentElement.scrollTop += scrollTopSpeed;
     }
+}
 
-    // prevent scrolling with arrow keys and space bar
-    function handleKeydown(event) {
-        if ((event.key == 'ArrowDown' || event.key == 'ArrowUp' || event.key == ' ') && event.target == document.body) {
-            event.preventDefault();
-        }
-    }
-
-    // hide scrollbar
-    const style = document.createElement('style');
-    style.textContent = `
+// hide scrollbar
+const style = document.createElement('style');
+style.setAttribute('no-scrollbar-style', '');
+style.textContent = `
         body::-webkit-scrollbar {
             display: none;
         }
     `;
+
+async function main(url) {
+    if (!(await limitScroll(url))) {
+        window.removeEventListener('wheel', handleWheel);
+        window.removeEventListener('keydown', handleKeydown);
+        document.querySelectorAll('[no-scrollbar-style]').forEach(e => e.remove());
+        return;
+    }
 
     window.addEventListener('wheel', handleWheel, { passive: false });
     window.addEventListener('keydown', handleKeydown);
     document.head.appendChild(style);
 }
 
-main();
+const force = await getDataFromStorage('force') ?? 50;
+main(window.location.href);
