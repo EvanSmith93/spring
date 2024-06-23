@@ -33,7 +33,7 @@ const Home = () => {
     return (
         <Space direction="vertical" style={{ padding: '12px 24px', width: '340px' }}>
             <Flex justify='space-between' align='center' dir='column' style={{ width: '100%' }} >
-                <h2>Glue Settings</h2>
+                <h2>Spring Settings</h2>
                 {isEnabled !== null &&
                     <Button
                         icon={<PoweroffOutlined />}
