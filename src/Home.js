@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import UrlInputList from "./UrlInputList";
-import { Space, Button, Flex, Slider } from "antd";
+import { Space, Button, Flex, Slider, Segmented } from "antd";
 import { PoweroffOutlined } from "@ant-design/icons";
 
 export const MIN_FORCE = 5;
@@ -9,23 +9,31 @@ export const MAX_FORCE = 4000;
 const Home = () => {
   const [isEnabled, setIsEnabled] = useState(null);
   const [force, setForce] = useState(null);
+  const [action, setAction] = useState(null);
 
   useEffect(() => {
     chrome.storage.local.get("isEnabled", (data) => {
       setIsEnabled(data.isEnabled ?? true);
     });
     chrome.storage.local.get("force", (data) => {
-      setForce(data.force ?? 200);
+      setForce(data.force ?? (MAX_FORCE + MIN_FORCE) / 2);
+    });
+    chrome.storage.local.get("action", (data) => {
+      setAction(data.action ?? "spring");
     });
   }, []);
 
   useEffect(() => {
-    chrome.storage.local.set({ isEnabled: isEnabled });
+    chrome.storage.local.set({ isEnabled });
   }, [isEnabled]);
 
   useEffect(() => {
-    chrome.storage.local.set({ force: force });
+    chrome.storage.local.set({ force });
   }, [force]);
+
+  useEffect(() => {
+    chrome.storage.local.set({ action });
+  }, [action]);
 
   const marks = { [MIN_FORCE]: "Very Stiff", [MAX_FORCE]: "Very Loose" };
   const formatter = (value) =>
@@ -53,7 +61,17 @@ const Home = () => {
           />
         )}
       </Flex>
-
+      {action !== null && (
+        <Segmented
+          options={[
+            { label: "Spring", value: "spring" },
+            { label: "Fade", value: "fade" },
+          ]}
+          value={action}
+          onChange={setAction}
+          disabled={!isEnabled}
+        />
+      )}
       {force !== null && (
         <Flex justify="center">
           <Slider
@@ -63,7 +81,7 @@ const Home = () => {
             marks={marks}
             tooltip={{ formatter }}
             defaultValue={force}
-            onChange={(value) => setForce(value)}
+            onChange={setForce}
             disabled={!isEnabled}
           />
         </Flex>
