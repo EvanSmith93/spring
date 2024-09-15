@@ -1,12 +1,10 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import Home from './Home';
-import './index.css';
+import React from "react";
+import ReactDOM from "react-dom";
+import Home from "./Home";
+import "./index.css";
 
 const App = () => {
-    return ( 
-        <Home />
-     );
-}
+  return <Home />;
+};
 
-ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.render(<App />, document.getElementById("root"));
