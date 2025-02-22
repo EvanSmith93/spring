@@ -64,13 +64,8 @@ async function isScrollLimited(url) {
   return true;
 }
 
-let currentUrl;
-
 async function onTabUpdated() {
   const tab = await getCurrentTabInfo();
-
-  if (tab.url == currentUrl) return;
-  currentUrl = tab.url;
 
   if (await isScrollLimited(tab.url)) {
     chrome.scripting.executeScript({

@@ -1,6 +1,11 @@
 import { MAX_FORCE, MIN_FORCE } from "./Home";
 
-if (window.location.protocol !== "chrome-extension:") {
+function init() {
+  if (window.location.protocol === "chrome-extension:") return;
+
+  if (window.springScriptExecuted) return;
+  window.springScriptExecuted = true;
+
   let force = (MAX_FORCE + MIN_FORCE) / 2;
   let action = "spring";
 
@@ -91,3 +96,5 @@ if (window.location.protocol !== "chrome-extension:") {
     }
   });
 }
+
+init();
