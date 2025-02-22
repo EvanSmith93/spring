@@ -35,7 +35,7 @@ const Home = () => {
     chrome.storage.local.set({ action });
   }, [action]);
 
-  const marks = { [MIN_FORCE]: "Very Stiff", [MAX_FORCE]: "Very Loose" };
+  const marks = { [MIN_FORCE]: "More Strict", [MAX_FORCE]: "More Lenient" };
   const formatter = (value) =>
     `${Math.round(((value - MIN_FORCE) / (MAX_FORCE - MIN_FORCE)) * 100)}%`;
 

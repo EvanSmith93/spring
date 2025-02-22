@@ -12,7 +12,7 @@
     "48": "icon.png",
     "128": "icon.png"
   },
-  "permissions": ["storage", "scripting"],
+  "permissions": ["storage", "scripting", "webNavigation", "tabs"],
   "background": {
     "service_worker": "background.bundle.js"
   },

@@ -64,14 +64,21 @@ async function isScrollLimited(url) {
   return true;
 }
 
-async function onTabUpdated(tabId, tab) {
+let currentUrl;
+
+async function onTabUpdated() {
+  const tab = await getCurrentTabInfo();
+
+  if (tab.url == currentUrl) return;
+  currentUrl = tab.url;
+
   if (await isScrollLimited(tab.url)) {
     chrome.scripting.executeScript({
-      target: { tabId: tabId },
+      target: { tabId: tab.id },
       files: ["content.bundle.js"],
     });
   } else {
-    chrome.tabs.sendMessage(tabId, { action: "removeEffects" }, (response) => {
+    chrome.tabs.sendMessage(tab.id, { action: "removeEffects" }, (response) => {
       if (chrome.runtime.lastError) {
         console.error(chrome.runtime.lastError);
       }
@@ -79,14 +86,19 @@ async function onTabUpdated(tabId, tab) {
   }
 }
 
-chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
-  if (changeInfo.status === "complete" && tab.active) {
-    onTabUpdated(tabId, tab);
+async function getCurrentTabInfo() {
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  return tab;
+}
+
+chrome.webNavigation.onHistoryStateUpdated.addListener((details) => {
+  if (details.frameId === 0) {
+    onTabUpdated();
   }
 });
 
-chrome.tabs.onActivated.addListener(async ({ tabId }) => {
-  chrome.tabs.query({ active: true, currentWindow: true }, async ([tab]) => {
-    onTabUpdated(tabId, tab);
-  });
+chrome.webNavigation.onCompleted.addListener((details) => {
+  if (details.frameId === 0) {
+    onTabUpdated();
+  }
 });

@@ -16,7 +16,7 @@ if (window.location.protocol !== "chrome-extension:") {
     switch (action) {
       case "spring": {
         event.preventDefault();
-        var scrollTopSpeed = event.deltaY;
+        let scrollTopSpeed = event.deltaY;
 
         if (scrollTopSpeed > 0) {
           const scrollFactor =
@@ -24,7 +24,10 @@ if (window.location.protocol !== "chrome-extension:") {
           scrollTopSpeed *= scrollFactor;
         }
 
-        document.documentElement.scrollTop += scrollTopSpeed;
+        window.requestAnimationFrame(() => {
+          document.documentElement.scrollTop += scrollTopSpeed;
+        });
+
         break;
       }
       case "fade": {
@@ -60,15 +63,6 @@ if (window.location.protocol !== "chrome-extension:") {
         }
     `;
 
-  async function addScrollLimiting(url) {
-    force = (await getDataFromStorage("force")) ?? force;
-    action = (await getDataFromStorage("action")) ?? action;
-
-    window.addEventListener("wheel", handleWheel, { passive: false });
-    window.addEventListener("keydown", handleKeydown);
-    document.head.appendChild(style);
-  }
-
   function removeScrollLimiting() {
     window.removeEventListener("wheel", handleWheel);
     window.removeEventListener("keydown", handleKeydown);
@@ -77,7 +71,18 @@ if (window.location.protocol !== "chrome-extension:") {
       .forEach((e) => e.remove());
   }
 
-  addScrollLimiting(window.location.href);
+  async function addScrollLimiting() {
+    removeScrollLimiting();
+
+    force = (await getDataFromStorage("force")) ?? force;
+    action = (await getDataFromStorage("action")) ?? action;
+
+    window.addEventListener("wheel", handleWheel, { passive: false });
+    window.addEventListener("keydown", handleKeydown);
+    document.head.appendChild(style);
+  }
+
+  addScrollLimiting();
 
   chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === "removeEffects") {
