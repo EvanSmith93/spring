@@ -18,30 +18,29 @@ function init() {
   }
 
   function handleWheel(event) {
+    const root = document.documentElement;
+    const body = document.body;
+
     switch (action) {
       case "spring": {
         event.preventDefault();
         let scrollTopSpeed = event.deltaY;
 
         if (scrollTopSpeed > 0) {
-          const scrollFactor =
-            force / (force + document.documentElement.scrollTop ** 1.3);
+          const scrollFactor = force / (force + root.scrollTop ** 1.3);
           scrollTopSpeed *= scrollFactor;
         }
 
         window.requestAnimationFrame(() => {
-          document.documentElement.scrollTop += scrollTopSpeed;
+          root.scrollTop += scrollTopSpeed;
         });
 
         break;
       }
       case "fade": {
-        const opacity = Math.min(
-          1,
-          force / (force + document.documentElement.scrollTop)
-        );
+        const opacity = Math.min(1, force / (force + root.scrollTop ** 1.1));
+        root.style.opacity = opacity;
 
-        document.documentElement.style.opacity = opacity;
         break;
       }
     }
