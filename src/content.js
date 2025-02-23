@@ -17,21 +17,18 @@ function init() {
 
   function handleWheel(event) {
     const root = document.documentElement;
-    const body = document.body;
 
     switch (action) {
       case "spring": {
         event.preventDefault();
-        let scrollTopSpeed = event.deltaY;
+        let scrollSpeedY = event.deltaY;
 
-        if (scrollTopSpeed > 0) {
+        if (scrollSpeedY > 0) {
           const scrollFactor = force / (force + root.scrollTop ** 1.3);
-          scrollTopSpeed *= scrollFactor;
+          scrollSpeedY *= scrollFactor;
         }
 
-        window.requestAnimationFrame(() => {
-          root.scrollTop += scrollTopSpeed;
-        });
+        root.scrollBy(0, scrollSpeedY);
 
         break;
       }
