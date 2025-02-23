@@ -2,9 +2,7 @@ import { MAX_FORCE, MIN_FORCE } from "./Home";
 
 function init() {
   if (window.location.protocol === "chrome-extension:") return;
-
-  if (window.springScriptExecuted) return;
-  window.springScriptExecuted = true;
+  if (window.springScriptEnabled) return;
 
   let force = (MAX_FORCE + MIN_FORCE) / 2;
   let action = "spring";
@@ -68,6 +66,8 @@ function init() {
     `;
 
   function removeScrollLimiting() {
+    window.springScriptEnabled = false;
+
     window.removeEventListener("wheel", handleWheel);
     window.removeEventListener("keydown", handleKeydown);
     document
@@ -76,7 +76,7 @@ function init() {
   }
 
   async function addScrollLimiting() {
-    removeScrollLimiting();
+    window.springScriptEnabled = true;
 
     force = (await getDataFromStorage("force")) ?? force;
     action = (await getDataFromStorage("action")) ?? action;
