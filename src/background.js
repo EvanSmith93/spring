@@ -1,4 +1,5 @@
 import psl from "psl";
+import { getDataFromStorage } from "./utils/storage";
 
 function addProtocol(url) {
   if (!/^\w+:\/\//i.test(url)) {
@@ -44,14 +45,6 @@ function isUrlMatching(base, target) {
   if (!isPathMatching) return false;
 
   return true;
-}
-
-async function getDataFromStorage(key) {
-  return new Promise((resolve, reject) => {
-    chrome.storage.local.get(key, (data) => {
-      resolve(data[key]);
-    });
-  });
 }
 
 async function isScrollLimited(url) {
