@@ -1,5 +1,5 @@
 import psl from "psl";
-import { getDataFromStorage } from "./utils/storage";
+import { getDataFromStorage } from "../utils/storage";
 
 function addProtocol(url) {
   if (!/^\w+:\/\//i.test(url)) {
