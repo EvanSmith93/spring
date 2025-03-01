@@ -23,7 +23,6 @@ async function main() {
   function removeScrollLimiting() {
     window.springScriptEnabled = false;
 
-    console.log("REMOVING");
     WheelLimiter.off();
     PreventKeyScrolling.off();
     ScrollbarHider.off();

@@ -13,10 +13,14 @@ function getLimitScroll(action, force) {
         }
 
         root.scrollBy(0, scrollSpeedY);
+
+        break;
       }
       case "fade": {
         const opacity = Math.min(1, force / (force + root.scrollTop ** 1.1));
         root.style.opacity = opacity;
+
+        break;
       }
     }
   };

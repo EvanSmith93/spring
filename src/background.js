@@ -66,10 +66,8 @@ async function onTabUpdated() {
       files: ["content.bundle.js"],
     });
   } else {
-    chrome.tabs.sendMessage(tab.id, { action: "removeEffects" }, (response) => {
-      if (chrome.runtime.lastError) {
-        console.error(chrome.runtime.lastError);
-      }
+    chrome.tabs.sendMessage(tab.id, { action: "removeEffects" }, () => {
+      if (chrome.runtime.lastError) return;
     });
   }
 }
@@ -80,13 +78,9 @@ async function getCurrentTabInfo() {
 }
 
 chrome.webNavigation.onHistoryStateUpdated.addListener((details) => {
-  if (details.frameId === 0) {
-    onTabUpdated();
-  }
+  if (details.frameId === 0) onTabUpdated();
 });
 
 chrome.webNavigation.onCompleted.addListener((details) => {
-  if (details.frameId === 0) {
-    onTabUpdated();
-  }
+  if (details.frameId === 0) onTabUpdated();
 });
