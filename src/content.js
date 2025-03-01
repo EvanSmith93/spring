@@ -70,6 +70,7 @@ function init() {
     document
       .querySelectorAll("[no-scrollbar-style]")
       .forEach((e) => e.remove());
+    document.documentElement.style.opacity = 1;
   }
 
   async function addScrollLimiting() {
